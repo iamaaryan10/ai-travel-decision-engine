@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-6">
@@ -10,9 +12,12 @@ export default function Home() {
         aggregation and AI-driven consensus optimization.
       </p>
 
-      <button className="mt-10 px-8 py-3 bg-white text-black rounded-xl font-semibold hover:opacity-90 transition">
+      <Link
+        href="/create-trip"
+        className="mt-10 px-8 py-3 bg-white text-black rounded-xl font-semibold hover:opacity-90 transition"
+      >
         Create Trip
-      </button>
+      </Link>
     </main>
   );
 }
