@@ -1,81 +1,36 @@
-# Accord  
-### AI Travel Decision Engine
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-Accord is an AI-powered platform designed to simplify group travel planning.
+## Getting Started
 
-Planning a trip with friends often turns into endless discussions, conflicting preferences, and decision fatigue. Accord aims to solve that problem by combining structured surveys, intelligent consensus modeling, and modern LLM-based reasoning.
+First, run the development server:
 
-This project focuses not only on building a travel app — but on designing a production-grade AI system with strong engineering foundations.
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
----
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## ✨ What It Does
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-- Collects structured preferences from trip participants
-- Generates AI-assisted destination and itinerary options
-- Supports group voting and consensus selection
-- Tracks AI usage, latency, and cost metrics
-- Implements rate limiting and abuse prevention
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
----
+## Learn More
 
-## 🧠 Engineering Focus
+To learn more about Next.js, take a look at the following resources:
 
-Accord is built as a systems-oriented AI project, with emphasis on:
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-- Prompt versioning and experimentation
-- Model routing strategies
-- Cost-aware AI usage
-- Usage logging and observability
-- Distributed rate limiting
-- Feedback-driven improvement
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-The goal is to explore how LLM-powered systems can be designed thoughtfully — not just integrated.
+## Deploy on Vercel
 
----
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-## 🏗 Architecture Overview
-
-Client (Next.js - TypeScript)  
-→ API Layer (Serverless)  
-→ AI Gateway  
-→ LLM Provider  
-
-Supporting services:
-- MongoDB Atlas
-- Upstash Redis
-- Metrics & logging layer
-
----
-
-## 📊 Observability
-
-The system tracks:
-
-- AI request latency
-- Token usage
-- Cost per request
-- Rate limit events
-- Model performance variations
-
-This enables evaluation and iterative improvement of prompt and routing strategies.
-
----
-
-## 🛣 Development Roadmap
-
-**Phase 1** – Core trip and survey system  
-**Phase 2** – AI integration  
-**Phase 3** – Prompt management & model routing  
-**Phase 4** – Cost tracking & logging  
-**Phase 5** – Rate limiting  
-**Phase 6** – Monitoring & metrics  
-**Phase 7** – ML-based consensus modeling  
-
----
-
-## 🎯 Why This Project?
-
-Accord is an exploration of real-world AI system design — focusing on reliability, cost control, experimentation, and scalability.
-
-It is intentionally built to reflect production-level thinking rather than a simple AI demo.
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
