@@ -18,6 +18,13 @@ export default function Home() {
       >
         Create Trip
       </Link>
+
+      <Link
+      href="/create-session"
+      className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold"
+    >
+        Create Voting Session
+      </Link>
     </main>
   );
 }
