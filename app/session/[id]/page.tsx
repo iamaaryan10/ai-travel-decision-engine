@@ -3,69 +3,61 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
-type Participant = {
-  id: string;
+interface Recommendation {
   name: string;
-  preferences: string[];
-  budget?: number | null;
-};
+  tags: string[];
+  averageCost: number;
+  score: number;
+}
 
-type Session = {
-  id: string;
-  title: string;
-  hostName: string;
-  createdAt: string;
-  participants: Participant[];
-};
+interface FinalizeResult {
+  averageBudget: number | null;
+  topPreferences: string[];
+  recommendations: Recommendation[];
+}
 
 export default function SessionPage() {
   const params = useParams();
   const id = params.id as string;
 
-  const [session, setSession] = useState<Session | null>(null);
+  const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   const [name, setName] = useState("");
+  const [preferences, setPreferences] = useState<string[]>([]);
   const [budget, setBudget] = useState("");
-  const [joining, setJoining] = useState(false);
-  const [selectedPreferences, setSelectedPreferences] = useState<string[]>([]);
 
-  // 🔥 Fetch session
+  const [result, setResult] = useState<FinalizeResult | null>(null);
+  const [finalizing, setFinalizing] = useState(false);
+
+  const preferenceOptions = [
+    "beach",
+    "mountains",
+    "nightlife",
+    "adventure",
+    "luxury",
+    "culture",
+  ];
+
+  // Fetch session
   const fetchSession = async () => {
     try {
       const res = await fetch(`/api/sessions/${id}`);
-      if (!res.ok) throw new Error("Failed to fetch session");
-
       const data = await res.json();
       setSession(data);
     } catch (err) {
-      console.error(err);
-      setError("Failed to load session");
+      console.error("Error fetching session:", err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (id) fetchSession();
+    fetchSession();
   }, [id]);
 
-  // Toggle preference
-  const togglePreference = (pref: string) => {
-    setSelectedPreferences((prev) =>
-      prev.includes(pref)
-        ? prev.filter((p) => p !== pref)
-        : [...prev, pref]
-    );
-  };
-
-  // Join session
+  // Handle Join
   const handleJoin = async () => {
-    if (!name.trim()) return;
-
-    setJoining(true);
-
     try {
       const res = await fetch(`/api/sessions/${id}/participants`, {
         method: "POST",
@@ -74,8 +66,8 @@ export default function SessionPage() {
         },
         body: JSON.stringify({
           name,
-          preferences: selectedPreferences,
-          budget: budget ? Number(budget) : null,
+          preferences,
+          budget: budget !== "" ? Number(budget) : null,
         }),
       });
 
@@ -83,98 +75,100 @@ export default function SessionPage() {
 
       setName("");
       setBudget("");
-      setSelectedPreferences([]);
-
-      await fetchSession();
+      setPreferences([]);
+      fetchSession();
     } catch (err) {
       console.error(err);
-    } finally {
-      setJoining(false);
+      alert("Join failed");
     }
   };
 
-  if (loading) {
-    return (
-      <main className="min-h-screen bg-black text-white p-10">
-        Loading...
-      </main>
-    );
-  }
+  // Handle Finalize
+  const handleFinalize = async () => {
+  setFinalizing(true);
 
-  if (error || !session) {
-    return (
-      <main className="min-h-screen bg-black text-red-500 p-10">
-        {error || "Session not found"}
-      </main>
-    );
+  try {
+    const res = await fetch(`/api/sessions/${id}/finalize`, {
+      method: "POST",
+    });
+
+    if (!res.ok) throw new Error("Failed to finalize");
+
+    const data = await res.json();
+
+    console.log("FINALIZE DATA:", data); // 👈 ADD THIS
+    setResult(data);
+
+    setTimeout(() => {
+      window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: "smooth",
+    });
+    }, 100);
+
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setFinalizing(false);
   }
+ };
+
+  if (loading) return <main className="p-10 bg-black text-white">Loading...</main>;
+  if (!session) return <main className="p-10 bg-black text-red-500">Session not found</main>;
 
   return (
     <main className="min-h-screen bg-black text-white p-10">
-      {/* Header */}
-      <h1 className="text-3xl font-bold mb-2">{session.title}</h1>
-      <p className="text-gray-400">Host: {session.hostName}</p>
-      <p className="text-gray-500 mb-6">
-        Created: {new Date(session.createdAt).toLocaleString()}
-      </p>
+      <h1 className="text-3xl font-bold">{session.title}</h1>
+      <p className="text-gray-400 mb-6">Host: {session.hostName}</p>
 
-      {/* Participants Section */}
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-4">Participants</h2>
+      {/* Participants */}
+      <h2 className="text-xl font-semibold mb-3">Participants</h2>
 
-        {session.participants.length === 0 ? (
-          <p className="text-gray-500">No participants yet</p>
-        ) : (
-          <div className="space-y-4">
-            {session.participants.map((p) => (
-              <div key={p.id} className="bg-gray-800 p-4 rounded">
-                <div className="font-medium text-lg">{p.name}</div>
-
-                <div className="text-sm text-gray-400 mt-1">
-                  {p.preferences.length > 0
-                    ? p.preferences.join(", ")
-                    : "No preferences selected"}
-                </div>
-
-                {p.budget && (
-                  <div className="text-sm text-green-400 mt-1">
-                    Budget: ₹{p.budget.toLocaleString()}
-                  </div>
-                )}
+      {session.participants.length === 0 ? (
+        <p className="text-gray-500 mb-6">No participants yet</p>
+      ) : (
+        <div className="space-y-2 mb-8">
+          {session.participants.map((p: any) => (
+            <div key={p.id} className="bg-gray-800 p-3 rounded">
+              <div className="font-semibold">{p.name}</div>
+              <div className="text-sm text-gray-400">
+                Preferences: {p.preferences.join(", ") || "None"}
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+              <div className="text-sm text-gray-400">
+                Budget: ₹{p.budget ?? "Not specified"}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Join Section */}
-      <div className="mt-12">
-        <h2 className="text-xl font-semibold mb-4">Join Session</h2>
+      <div className="mb-10">
+        <h2 className="text-xl font-semibold mb-3">Join Session</h2>
 
-        {/* Name Input */}
         <input
           type="text"
           placeholder="Your Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="p-3 bg-gray-800 rounded w-64 mb-4"
+          className="bg-gray-800 p-2 rounded w-64 mb-4"
         />
 
-        {/* Preferences */}
-        <div className="mb-4 space-y-2">
-          {[
-            "beach",
-            "mountains",
-            "nightlife",
-            "adventure",
-            "luxury",
-            "culture",
-          ].map((pref) => (
-            <label key={pref} className="block cursor-pointer">
+        <div className="mb-4">
+          <p className="mb-2">Preferences:</p>
+          {preferenceOptions.map((pref) => (
+            <label key={pref} className="block">
               <input
                 type="checkbox"
-                checked={selectedPreferences.includes(pref)}
-                onChange={() => togglePreference(pref)}
+                value={pref}
+                checked={preferences.includes(pref)}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setPreferences([...preferences, pref]);
+                  } else {
+                    setPreferences(preferences.filter((p) => p !== pref));
+                  }
+                }}
                 className="mr-2"
               />
               {pref}
@@ -182,28 +176,67 @@ export default function SessionPage() {
           ))}
         </div>
 
-        {/* Budget Input */}
-        <div className="mb-6">
-          <label className="block mb-1 text-gray-400">
-            Your Budget (INR)
-          </label>
+        <div className="mb-4">
+          <p>Budget (INR):</p>
           <input
             type="number"
-            placeholder="Enter amount in INR"
             value={budget}
             onChange={(e) => setBudget(e.target.value)}
-            className="p-3 bg-gray-800 rounded w-64"
+            className="bg-gray-800 p-2 rounded w-64"
           />
         </div>
 
         <button
           onClick={handleJoin}
-          disabled={joining}
-          className="px-6 py-2 bg-green-600 rounded hover:bg-green-700 disabled:opacity-50"
+          className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700"
         >
-          {joining ? "Joining..." : "Join"}
+          Join
         </button>
       </div>
+
+      {/* Finalize Button */}
+      <button
+        onClick={handleFinalize}
+        disabled={finalizing}
+        className="px-6 py-3 bg-green-600 rounded hover:bg-green-700 disabled:opacity-50"
+      >
+        {finalizing ? "Analyzing..." : "Finalize Decision"}
+      </button>
+
+      {/* Results */}
+      {result && (
+        <div className="mt-10 bg-gray-900 p-6 rounded-xl">
+          <h2 className="text-2xl font-bold text-green-400 mb-4">
+            🎯 Recommendations
+          </h2>
+
+          <p>
+            <strong>Average Budget:</strong> ₹{result.averageBudget}
+          </p>
+
+          <p className="mb-4">
+            <strong>Top Preferences:</strong>{" "}
+            {result.topPreferences.join(", ")}
+          </p>
+
+          {result.recommendations.map((rec, index) => (
+            <div
+              key={index}
+              className="bg-gray-800 p-4 rounded mb-3 border border-gray-700"
+            >
+              <h3 className="text-lg font-semibold">
+                {index === 0 ? "🏆 Best Match: " : ""}
+                {rec.name}
+              </h3>
+              <p>Tags: {rec.tags.join(", ")}</p>
+              <p>Average Cost: ₹{rec.averageCost}</p>
+              <p className="text-green-400">
+                Score: {rec.score.toFixed(2)}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
     </main>
   );
 }
