@@ -8,9 +8,35 @@ export async function POST(
   try {
     const { id } = await context.params;
 
+    // 1️⃣ Get session analysis from DB
     const result = await analyzeSession(id);
 
-    return NextResponse.json(result);
+    if (!result) {
+      return NextResponse.json(
+        { error: "No analysis result found" },
+        { status: 404 }
+      );
+    }
+
+    // 2️⃣ Call Python ML service
+    const mlResponse = await fetch("http://localhost:8000/recommend", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        averageBudget: result.averageBudget,
+        topPreferences: result.topPreferences,
+      }),
+    });
+
+    if (!mlResponse.ok) {
+      throw new Error("ML service failed");
+    }
+
+    const mlData = await mlResponse.json();
+
+    return NextResponse.json(mlData);
 
   } catch (error) {
     console.error("Finalize error:", error);
