@@ -41,3 +41,13 @@ yarn-error.log*
 next-env.d.ts
 
 /src/generated/prisma
+
+# ----------------------
+# Python / ML
+# ----------------------
+.venv/
+__pycache__/
+*.pyc
+
+# ML model artifacts
+ml-service/models/
