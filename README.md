@@ -1,53 +1,35 @@
-# AI Travel Decision Engine
+AI Travel Decision Engine
 
-Production-grade AI system for collaborative travel planning with intelligent preference aggregation, voting, and LLM-powered consensus optimization.
+AI-powered group travel recommendation system using a full stack + ML microservice architecture.
 
----
+Collaborative group sessions allow users to share travel preference information and budget constraints. The system processes structured feature vectors and returns a list of recommended destinations based on a ranking algorithm.
 
-## 🚀 Vision
+**Technology Stack**
 
-Planning group trips is chaotic.
+Next.js (TypeScript)
 
-Different budgets. Different preferences. Endless WhatsApp debates.
+Prisma + PostgreSQL (Neon)
 
-This system transforms group travel planning into a structured, AI-assisted decision process.
+FastAPI ML microservice
 
-Participants:
-- Receive survey links
-- Submit structured preferences
-- Vote on options
-- Reach optimized consensus via AI routing
+Scikit-Learn (KMeans, StandardScaler)
 
----
+Cosine Similarity
 
-## 🧠 Core Features (Planned)
+Hyperparameter Tuning (Silhouette Score)
 
-- Trip creation & participant management
-- Survey link generation (SMS-ready)
-- Preference collection engine
-- Voting system
-- LLM-based decision synthesis
-- Prompt versioning & systematic prompt engineering
-- Real-time usage tracking & cost monitoring
-- Rate limiting & abuse prevention
-- Observability with Prometheus metrics
-- Production-ready deployment on Vercel
+**Machine Learning Approach**
 
----
+Multi-hot encoded destination feature vectors
 
-## 🛠 Tech Stack
+Feature Scaling using StandardScaler
 
-- Next.js (App Router)
-- TypeScript
-- Tailwind CSS
-- GitHub Actions (planned)
-- Vercel Deployment (planned)
-- LLM Gateway Architecture (planned)
+Automatic K Selection (2-6) using Silhouette Score
 
----
+Budget-aware hybrid ranking approach
 
-## 📦 Getting Started
+**Optimal Clustering Configuration**
 
-```bash
-npm install
-npm run dev
+K = 5
+
+Silhouette Score: ~0.36
