@@ -5,7 +5,8 @@ AI-powered group travel recommendation system using a full stack + ML microservi
 Collaborative group sessions allow users to share travel preference information and budget constraints. The system processes structured feature vectors and returns a list of recommended destinations based on a ranking algorithm.
 
 **System Architecture**
-<img width="958" height="535" alt="image" src="https://github.com/user-attachments/assets/c6a3d713-b94b-4987-859b-8a4a0f3f68f8" />
+<img width="829" height="417" alt="image" src="https://github.com/user-attachments/assets/87848a31-0937-4c09-a6f8-3ffd19495ce4" />
+
 
 
 **Technology Stack**
