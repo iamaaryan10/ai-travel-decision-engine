@@ -1,4 +1,4 @@
-AI Travel Decision Engine
+# AI Travel Decision Engine
 
 AI-powered group travel recommendation system using a full stack + ML microservice architecture.
 
